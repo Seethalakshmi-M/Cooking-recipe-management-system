@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe</title>
+    <link rel="stylesheet" href="../style/addRecipe.css" />
+    <style>
+        
+    </style>
+</head>
+<body>
+
+<form action="../php/addRecipe.php" method="post" enctype="multipart/form-data">
+    <label for="recipeTitle">Recipe Title:</label>
+    <input type="text" id="recipeTitle" name="recipeTitle" required>
+
+    <label for="category">Category:</label>
+    <select id="category" name="category" required>
+        <option value="Appetizers">Appetizers</option>
+        <option value="Main Course">Main Course</option>
+        <option value="Desserts">Desserts</option>
+        <option value="Salads">Salads</option>
+        <option value="Beverages">Beverages</option>
+    </select>
+
+    <label for="recipeImage">Recipe Image (JPG only):</label>
+    <input type="file" id="recipeImage" name="recipeImage" accept=".jpg" required>
+
+    <label for="ingredients">Ingredients and Quantities:</label>
+    <table id="ingredientTable">
+        <tr>
+            <th>Ingredient</th>
+            <th>Quantity</th>
+        </tr>
+        <tr>
+            <td><input type="text" name="ingredient[]" required></td>
+            <td><input type="text" name="quantity[]" required></td>
+        </tr>
+    </table></br>
+    <button type="button" onclick="addRow('ingredientTable')">Add Ingredients</button></br></br>
+
+    <label for="prepTime">Prep Time (hh:mm:ss):</label>
+    <input type="text" id="prepTime" name="prepTime" pattern="^(?:[0-5]\d|6[0-9]|7[0-2]):[0-5]\d:[0-5]\d$" title="Enter a valid time in hh:mm:ss format" placeholder="HH:MM:SS" required>
+
+    <label for="servings">Number of Servings:</label>
+    <input type="text" id="servings" name="servings" title="Enter the number of servings" placeholder="eg:4 Servings" required>
+
+    <label for="procedure">Procedure:</label>
+    <div id="procedureContainer">
+        <div class="procedure-step">
+            <textarea name="procedure[]" rows="3" required></textarea>
+            <button type="button" class="delete-step" onclick="deleteProcedureStep(this)">Delete Step</button>
+            <button type="button" onclick="addProcedure()">Add Step</button></br>
+        </div>
+        
+    </div>
+
+    <button type="submit">Add Recipe</button>
+</form>
+
+<script>
+    function addRow(tableId) {
+        var table = document.getElementById(tableId);
+        var newRow = table.insertRow(table.rows.length);
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        cell1.innerHTML = '<input type="text" name="ingredient[]" required>';
+        cell2.innerHTML = '<input type="text" name="quantity[]" required>';
+    }
+
+    function addProcedure() {
+        var container = document.getElementById("procedureContainer");
+        var procedureStep = document.createElement("div");
+        procedureStep.className = "procedure-step";
+        procedureStep.innerHTML = `
+            <textarea name="procedure[]" rows="3" required></textarea>
+            <button type="button" class="delete-step" onclick="deleteProcedureStep(this)">Delete Step</button>
+            <button type="button" onclick="addProcedure()">Add Step</button>
+        `;
+        container.appendChild(procedureStep);
+    }
+
+    function deleteProcedureStep(button) {
+        var container = document.getElementById("procedureContainer");
+        var procedureStep = button.parentNode;
+        container.removeChild(procedureStep);
+    }
+
+    function updateImageName() {
+        var titleInput = document.getElementById("recipeTitle");
+        var imageInput = document.getElementById("recipeImage");
+
+        // Replace spaces with underscores and convert to lowercase
+        var imageName = titleInput.value.trim().replace(/\s+/g, '_').toLowerCase() + ".jpg";
+        imageInput.value = imageName;
+    }
+</script>
+
+</body>
+</html>
